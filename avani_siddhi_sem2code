@@ -1,0 +1,115 @@
+from machine import Pin, PWM
+import time
+import random
+import neopixel
+
+# Define LEDs
+ledB = PWM(Pin(2))
+ledA = PWM(Pin(19))
+
+ledB.freq(1000)
+ledA.freq(1000)
+
+# Define buzzers
+buzzer1 = Pin(12)
+
+# Initialize NeoPixels
+np = neopixel.NeoPixel(Pin(25), 16)  # 16 NeoPixels
+colors = [
+    (255, 105, 180),  # hot pink
+    (0, 255, 255),    # aqua
+    (255, 255, 0),    # yellow
+    (186, 85, 211),   # orchid
+    (0, 255, 127),    # neon green
+    (255, 0, 255),    # magenta
+    (255, 69, 0),     # coral
+]
+
+# Define Servo motors
+servo1 = PWM(Pin(27))
+servo2 = PWM(Pin(18))
+servo3 = PWM(Pin(5))
+servo4 = PWM(Pin(21))
+servo_m = PWM(Pin(4))
+
+servo1.freq(50)
+servo2.freq(50)
+servo3.freq(50)
+servo4.freq(50)
+servo_m.freq(50)  # Added missing frequency setting
+
+print("defined")
+#start the process
+
+# Gradually brightening the led (sunrise)
+k = 5
+while k < 1023:
+    ledB.duty(k)
+    ledA.duty(k)
+    k += 5
+    time.sleep(0.05)
+
+print("Finished with synchronized lights, servos, and buzzer!")
+
+# Turning on the buzzer (alarm)
+b = 0
+
+while (b < 4):
+    buzzer1.value(1)  # Changed from value() to duty() for consistency
+    time.sleep(1)
+    buzzer1.value(0)    # Changed from value() to duty() for consistency
+    time.sleep(1)
+    b = b + 1
+
+# Move servo 1 (sitting)
+servo1.duty(26)  # Move the servo motor raft to 0 degrees
+time.sleep(1)
+servo_m.duty(120)  # Move the servo motor raft to 90 degrees
+time.sleep(0.5)
+servo1.duty(128)  # Move the servo motor raft to 90 degrees
+time.sleep(3)
+servo_m.duty(26)  # Move the servo motor raft to 90 degrees
+time.sleep(2)
+
+print("motor open marble and sit up fall")
+servo_m.duty(26)  # Move the servo motor raft to 90 degrees
+time.sleep(2)
+servo1.duty(26)  # Move the servo motor raft to 0 degrees
+time.sleep(1)
+print("3/4 sitting (done")
+
+# Move servo_m (bomb)
+# Move servo 2 (make up)
+servo2.duty(26)  # Move the servo motor raft to 0 degrees
+time.sleep(1)
+servo2.duty(77)  # Move the servo motor raft to 90 degrees
+time.sleep(1)
+
+#IF SERVO HAS TO BE PUT PUT HERE
+ledB.duty(0)
+# DJ lights + servo movements + buzzer
+a = 0
+while a < 10:
+    # Servo movements (simultaneously with NeoPixels and Buzzer)
+    servo3.duty(26)  # Move servo 3 to 0 degrees
+    servo4.duty(128)  # Move servo 4 to 180 degrees
+    buzzer1.value(1)  # Buzzer 1 ON
+    print("last last lasttttt")
+    for i in range(16):
+        np[i] = random.choice(colors)  # Random color for NeoPixel
+    np.write()
+    time.sleep(1)  # Wait for 0.24 seconds
+
+    # Servo reset position + buzzer OFF + NeoPixels OFF
+    servo3.duty(128)  # Move servo 3 to 180  degrees
+    servo4.duty(26)  # Move servo 4 to 0 degrees
+
+    buzzer1.value(0)  # Buzzer 1 OFF
+    for i in range(16):
+        np[i] = (0, 0, 0)  # Turn off NeoPixel lights
+    np.write()
+    time.sleep(1)  # Wait for 0.05 seconds
+
+    a += 1  # Increment counter
+
+print("Finished with synchronized lights, servos, and buzzer lalallaa!")
